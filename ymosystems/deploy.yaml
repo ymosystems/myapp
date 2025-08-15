@@ -1,0 +1,39 @@
+---
+version: "2.0"
+
+services:
+  ai-agent-hub:
+    image: your-dockerhub-username/ai-agent-hub:latest
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    ai-agent-hub:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 512Mi
+        storage:
+          size: 1Gi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        ai-agent-hub:
+          denom: uakt
+          amount: 1000
+
+deployment:
+  ai-agent-hub:
+    dcloud:
+      profile: ai-agent-hub
+      count: 1
