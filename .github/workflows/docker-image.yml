@@ -2,24 +2,29 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - '**'  # любая ветка, чтобы workflow точно запускался
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout кода
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Логин в Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.tenikvadratnie }}
-          password: ${{ secrets.ymosystems }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      # 3️⃣ Build и push Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
-          tags: ТВОЙ_ЛОГИН_DOCKER_HUB/ИМЯ_ПРОЕКТА:latest
- 
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest 
